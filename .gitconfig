@@ -1,0 +1,43 @@
+[alias]
+  co = checkout
+  ci = commit
+  dci = duet-commit
+  ph = push origin HEAD
+  pl = pull origin
+  st = status
+  br = branch
+  hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+  type = cat-file -t
+  dump = cat-file -p
+  ignored = !git ls-files -v | grep "^[[:lower:]]"
+  histl = log --graph --pretty=format:'%Cred%h%Creset %w(72,1,2)%s -%C(yellow)%d%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+  histco = "!f() { git checkout `git rev-list -n 1 --first-parent --before='$1' master`; }; f"
+date=relative
+[user]
+	name = Brychu
+	email = pbrych@gmail.com
+[core]
+	excludesfile = /home/pedro/.gitignore_global
+	ignorecase = true
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+[diff "sopsdiffer"]
+	textconv = sops -d
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[commit]
+	template = /Users/admin/.stCommitMsg
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[push]
+	followTags = true
+	default = upstream
+[includeif "gitdir:~/Work/"]
+	path = .gitconfig.work
+[rerere]
+	enabled = true
