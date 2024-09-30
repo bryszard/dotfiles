@@ -5,8 +5,10 @@
 **/.yardoc
 .byebug_history
 .idea
-.DS_Store
+*.tool-versions
+**/.DS_Store
 .solargraph.yml
+.solargraph_definitions.rb
 .eslintrc.js
 .prettierrc.js
 .pryrc
@@ -16,3 +18,6 @@
 tags
 jsconfig.json
 .rakeTasks
+.irb_history
+rubocop_cache
+rspec-failures

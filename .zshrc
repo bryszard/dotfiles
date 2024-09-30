@@ -1,8 +1,11 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH:$HOME/Library/Python/4.8/bin:$HOME/opt/homebrew/bin/
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/pedro/.oh-my-zsh"
+export ZSH="/Users/pedro/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -70,7 +73,7 @@ ZSH_THEME="geoffgarside"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(asdf git)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -101,19 +104,27 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias srspec="spring rspec"
 alias sstop="spring stop"
+alias be="bundle exec"
 alias berspec="bundle exec rspec"
 alias bera="bundle exec rubocop -a"
 alias grua="git ls-files -m | xargs bundle exec rubocop -a"
 alias k="kubectl"
 alias ccluster="./scripts/change_cluster.sh"
 alias kg="kubectl -n gitlab-environments"
+alias kgatapp="k get pod | grep gat-app | tail -1 | sed -E 's/([a-z0-9-]+).+/\1/'"
+alias rpi="ssh birds@192.168.0.89"
+alias livedesk="/Applications/Livebook.app/Contents/MacOS/Livebook"
+alias mikrus="ssh root@2a01:4f9:4a:27c1::288"
+alias cleardns="sudo killall -HUP mDNSResponder"
 
 # Git aliases
 alias gph="git push origin HEAD"
+alias rgph="bundle exec rubocop --parallel && gph"
 alias gpl="git pull origin"
 alias gmg="git merge --no-ff"
 alias gco="git co"
-alias gbrclean="git br | grep -v master | xargs git br -D"
+alias gbrclean="git br | grep -v 'master\|main' | xargs git br -D"
+
 
 # Specific for dev-environment-setup from GAT
 function dcup() {
@@ -122,6 +133,7 @@ function dcup() {
 
 unsetopt share_history
 
+#/opt/homebrew/opt/asdf/libexec/asdf.sh
 . $HOME/.asdf/asdf.sh
 . $HOME/.asdf/completions/asdf.bash
 
@@ -130,4 +142,16 @@ eval "$(direnv hook zsh)"
 [[ /usr/local/bin/kubectl ]] && source <(kubectl completion zsh)
 
 export ERL_AFLAGS="-kernel shell_history enabled"
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+export PUPPETEER_EXECUTABLE_PATH=`which chromium`
 
+# bun completions
+[ -s "/Users/pedro/.bun/_bun" ] && source "/Users/pedro/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

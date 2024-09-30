@@ -17,7 +17,7 @@ date=relative
 	name = Brychu
 	email = pbrych@gmail.com
 [core]
-	excludesfile = /home/pedro/.gitignore_global
+	excludesfile = /Users/pedro/.gitignore_global
 	ignorecase = true
 [filter "lfs"]
 	process = git-lfs filter-process
@@ -41,3 +41,5 @@ date=relative
 	path = .gitconfig.work
 [rerere]
 	enabled = true
+[pull]
+	ff = only
