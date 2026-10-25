@@ -12,7 +12,8 @@
   ignored = !git ls-files -v | grep "^[[:lower:]]"
   histl = log --graph --pretty=format:'%Cred%h%Creset %w(72,1,2)%s -%C(yellow)%d%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
   histco = "!f() { git checkout `git rev-list -n 1 --first-parent --before='$1' master`; }; f"
-date=relative
+
+date=relative  
 [user]
 	name = Brychu
 	email = pbrych@gmail.com
@@ -31,6 +32,7 @@ date=relative
 	trustExitCode = true
 [commit]
 	template = /Users/admin/.stCommitMsg
+	verbose = true
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
@@ -41,5 +43,36 @@ date=relative
 	path = .gitconfig.work
 [rerere]
 	enabled = true
+	autoupdate = true
 [pull]
 	ff = only
+[init]
+	defaultBranch = main
+[column]
+        ui = never
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[diff]
+	algorithm = histogram
+	mnemonicPrefix = true
+	renames = true
+[push] 
+	default = simple
+	autoSetupRemote = true
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+[help]
+	autocorrect = prompt
+[rebase]
+	autoStash = true
+	updateRefs = true
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential

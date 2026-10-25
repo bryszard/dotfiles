@@ -3,6 +3,9 @@ export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH:$HOME/Library/Python
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH="/Users/pedro/Library/Python/3.9/bin:$PATH"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+export EDITOR="vim"
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/pedro/.oh-my-zsh"
@@ -82,7 +85,7 @@ source $ZSH/oh-my-zsh.sh
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -105,45 +108,63 @@ source $ZSH/oh-my-zsh.sh
 alias srspec="spring rspec"
 alias sstop="spring stop"
 alias be="bundle exec"
+alias ber="bundle exec rails"
 alias berspec="bundle exec rspec"
-alias bera="bundle exec rubocop -a"
-alias grua="git ls-files -m | xargs bundle exec rubocop -a"
 alias k="kubectl"
-alias ccluster="./scripts/change_cluster.sh"
-alias kg="kubectl -n gitlab-environments"
-alias kgatapp="k get pod | grep gat-app | tail -1 | sed -E 's/([a-z0-9-]+).+/\1/'"
 alias rpi="ssh birds@192.168.0.89"
 alias livedesk="/Applications/Livebook.app/Contents/MacOS/Livebook"
 alias mikrus="ssh root@2a01:4f9:4a:27c1::288"
 alias cleardns="sudo killall -HUP mDNSResponder"
+alias ssh-openclaw="ssh claw@100.101.51.112"
 
 # Git aliases
 alias gph="git push origin HEAD"
+alias gphf="git push origin HEAD --force-with-lease"
 alias rgph="bundle exec rubocop --parallel && gph"
 alias gpl="git pull origin"
 alias gmg="git merge --no-ff"
 alias gco="git co"
 alias gbrclean="git br | grep -v 'master\|main' | xargs git br -D"
+# That's for elefant only
+alias gelefant="git cherry-pick 25da2974"
 
+alias playh="npx playwright test --headed --project=chromium --project=chromium-har --reporter=line"
+alias playl="npx playwright test --project=chromium --project=chromium-har --reporter=line"
 
-# Specific for dev-environment-setup from GAT
-function dcup() {
-	docker-compose up -d $1-app && docker attach $(echo $(docker container ls | grep $1-app_1) | awk '{print $1}')
+aws-sso() {
+  echo "Initiating AWS SSO..."
+  tmp_out=$(mktemp)
+  aws sso login --no-browser > "$tmp_out" 2>&1 &
+  login_pid=$!
+  trap 'rm -f "$tmp_out"; kill $login_pid 2>/dev/null; trap - INT TERM; return 130' INT TERM
+
+  local retries=10
+  while [ $retries -gt 0 ]; do
+    url=$(grep -o 'https://[^ ]*' "$tmp_out" | head -n 1)
+    code=$(grep -A 2 "enter the code:" "$tmp_out" | tail -n 1 | xargs)
+    [ -n "$url" ] && [ -n "$code" ] && break
+    sleep 0.5
+    retries=$((retries - 1))
+  done
+
+  if [ -n "$url" ] && [ -n "$code" ]; then
+    local final_url="${url}?user_code=${code}"
+    echo "Opening Island..."
+    open -a "Island" "$final_url"
+    wait $login_pid
+  else
+    echo "Error: Capture failed."
+    kill $login_pid
+  fi
+  rm -f "$tmp_out"
+  trap - INT TERM
 }
 
 unsetopt share_history
 
-#/opt/homebrew/opt/asdf/libexec/asdf.sh
-. $HOME/.asdf/asdf.sh
-. $HOME/.asdf/completions/asdf.bash
-
 eval "$(direnv hook zsh)"
 
-[[ /usr/local/bin/kubectl ]] && source <(kubectl completion zsh)
-
 export ERL_AFLAGS="-kernel shell_history enabled"
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-export PUPPETEER_EXECUTABLE_PATH=`which chromium`
 
 # bun completions
 [ -s "/Users/pedro/.bun/_bun" ] && source "/Users/pedro/.bun/_bun"
@@ -155,3 +176,25 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Added by Windsurf
+export PATH="/Users/pedro/.codeium/windsurf/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/pedro/.lmstudio/bin"
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh --disable-up-arrow)"
+
+# pnpm
+export PNPM_HOME="/Users/pedro/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+ulimit -n 65536
+ulimit -n 65536
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$ANDROID_HOME/platform-tools:$PATH"
